@@ -15,13 +15,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.getbase.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_refresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:backgroundTint="@color/purple_200"
+        app:layout_constraintEnd_toEndOf="parent"
         android:clickable="true"
         android:focusable="true"
         android:layout_gravity="center"
@@ -34,5 +33,5 @@
         app:pressedTranslationZ="6dp"
         app:fabSize="mini"
         app:borderWidth="0dp"
-      />
+        android:contentDescription="刷新" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,12 @@
 package `fun`.nemo.community
 
+import `fun`.nemo.community.utils.StatusBarUtil
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.KeyEvent.KEYCODE_BACK
 import android.webkit.WebResourceRequest
@@ -16,6 +18,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
+    private val mWhiteUrl =
+        arrayOf(
+            "https://www.link-nemo.com/u/",
+            "https://www.link-nemo.com/my/article/category",
+            "https://www.link-nemo.com/personal/setting",
+            "https://www.link-nemo.com/moderator/dashboard",
+            "https://www.link-nemo.com/note"
+        )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -43,6 +54,11 @@ class MainActivity : AppCompatActivity() {
         webSettings.loadsImagesAutomatically = true //支持自动加载图片
         webSettings.defaultTextEncodingName = "utf-8"//设置编码格式
         webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String) {
+                changeStatusBarColor(url)
+                super.onPageFinished(view, url)
+            }
+
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 if (url.startsWith("https://www.link-nemo.com")) {
                     view.loadUrl(url)
@@ -57,15 +73,30 @@ class MainActivity : AppCompatActivity() {
                 request: WebResourceRequest?
             ): Boolean {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    if (request?.url.toString().contains("https://www.link-nemo.com")) {
+                    if (request?.url.toString().contains("www.link-nemo.com")) {
                         view?.loadUrl(request?.url.toString())
                         return true
-                    }else{
+                    } else {
                         openOurWebView(request?.url.toString())
                     }
                 }
                 return true
             }
+        }
+    }
+
+    private fun changeStatusBarColor(url: String) {
+        Log.e("url", "url:$url")
+        var isWhite = false
+        for (whiteUrl in mWhiteUrl) {
+            if (url.startsWith(whiteUrl)) {
+                isWhite = true
+            }
+        }
+        if (isWhite) {
+            StatusBarUtil.setStatusBarMode(this, true, R.color.white)
+        } else {
+            StatusBarUtil.setStatusBarMode(this, false, R.color.purple_700)
         }
     }
 
