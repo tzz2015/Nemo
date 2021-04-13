@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
         for (whiteUrl in mWhiteUrl) {
             if (url.startsWith(whiteUrl)) {
                 isWhite = true
+                break
             }
         }
         if (isWhite) {
