@@ -20,7 +20,6 @@ import com.github.chrisbanes.photoview.PhotoView
 class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter() {
     var myOptions = RequestOptions()
         .fitCenter()
-        .placeholder(R.drawable.common_lodding)
         .override(720, 720)
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
