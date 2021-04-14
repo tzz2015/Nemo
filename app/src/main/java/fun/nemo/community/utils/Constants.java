@@ -16,4 +16,17 @@ public class Constants {
                     "https://www.link-nemo.com/note"
             };
     public static String HOST_URL = "https://www.link-nemo.com/";
+
+    public static String INJECTION_JS = "javascript:(function(){" +
+            "var objs = document.getElementsByTagName(\"img\"); " +
+            " var array=new Array(); " +
+            " for(var j=0;j<objs.length;j++){ array[j]=objs[j].src; }" +
+            "for(var i=0;i<objs.length;i++)  " +
+            "{"
+            + "    objs[i].onclick=function()  " +
+            "    {  "
+            + "        window.imagelistener.openImage(this.src,array);  " +
+            "    }  " +
+            "}" +
+            "})()";
 }

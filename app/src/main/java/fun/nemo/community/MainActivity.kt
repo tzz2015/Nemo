@@ -1,7 +1,7 @@
 package `fun`.nemo.community
 
-import `fun`.nemo.community.utils.Constants.HOST_URL
-import `fun`.nemo.community.utils.Constants.WHITE_URL
+import `fun`.nemo.community.interfaces.MJavascriptInterface
+import `fun`.nemo.community.utils.Constants.*
 import `fun`.nemo.community.utils.StatusBarUtil
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         fab_refresh.setOnClickListener { webView.reload() }
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
+    @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
     private fun initWebView() {
         webView.loadUrl(HOST_URL)
         val webSettings = webView.settings
@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         webSettings.javaScriptCanOpenWindowsAutomatically = true //支持通过JS打开新窗口 
         webSettings.loadsImagesAutomatically = true //支持自动加载图片
         webSettings.defaultTextEncodingName = "utf-8"//设置编码格式
+        webView.addJavascriptInterface(MJavascriptInterface(this), "imagelistener");
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 view?.settings?.blockNetworkImage = true
@@ -57,6 +58,8 @@ class MainActivity : AppCompatActivity() {
             override fun onPageFinished(view: WebView?, url: String) {
                 view?.settings?.blockNetworkImage = false
                 changeStatusBarColor(url)
+                // 注入js
+                view?.loadUrl(INJECTION_JS)
                 super.onPageFinished(view, url)
             }
 
