@@ -14,11 +14,23 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_num"
+        android:text="1/12"
+        android:textSize="20sp"
         android:textColor="@color/white"
         android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bt_down"
+        android:layout_margin="15dp"
+        android:text="下载高清图"
+        android:textColor="@android:color/holo_red_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/teal_200"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

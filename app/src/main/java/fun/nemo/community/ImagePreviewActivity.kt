@@ -1,20 +1,27 @@
 package `fun`.nemo.community
 
 import `fun`.nemo.community.adapter.PreviewAdapter
+import `fun`.nemo.community.utils.DownImageUtil
 import `fun`.nemo.community.utils.StatusBarUtil
+import android.Manifest
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.activity_image_preview.*
+import pub.devrel.easypermissions.AfterPermissionGranted
+import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class ImagePreviewActivity : AppCompatActivity() {
     private val tag = "ImagePreviewActivity"
     private val mImageUrls: MutableList<String> = Collections.synchronizedList(ArrayList())
     private var mIndex = 0
+
+    companion object {
+        private const val WRITE_EXTERNAL_STORAGE_CODE = 666
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +48,12 @@ class ImagePreviewActivity : AppCompatActivity() {
 
             override fun onPageSelected(position: Int) {
                 updatePreviewNum(position)
+                mIndex = position
             }
-
         })
+        bt_down.setOnClickListener {
+            saveImageToLocal(mImageUrls[mIndex])
+        }
     }
 
     private fun updatePreviewNum(index: Int) {
@@ -63,6 +73,31 @@ class ImagePreviewActivity : AppCompatActivity() {
                 mIndex = 0
             }
         }
+    }
+
+    @AfterPermissionGranted(WRITE_EXTERNAL_STORAGE_CODE)
+    private fun saveImageToLocal(url: String) {
+        val perms = arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+        if (EasyPermissions.hasPermissions(this, *perms)) {
+            DownImageUtil.saveImgToLocal(this, url)
+        } else {
+            EasyPermissions.requestPermissions(
+                this, "", WRITE_EXTERNAL_STORAGE_CODE, *perms
+            )
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
 

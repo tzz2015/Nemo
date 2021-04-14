@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Nemo"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ImagePreviewActivity"></activity>
+        <activity android:name=".ImagePreviewActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

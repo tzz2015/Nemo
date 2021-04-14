@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.FileUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -36,7 +38,7 @@ public class DownImageUtil {
      * @param context 上下文
      * @param url     网络图
      */
-    private void saveImgToLocal(Context context, String url) {
+    public static void saveImgToLocal(Context context, String url) {
         //如果是网络图片，抠图的结果，需要先保存到本地
         Glide.with(context)
                 .downloadOnly()
@@ -63,21 +65,27 @@ public class DownImageUtil {
      * @param context  上下文
      * @param resource 网络图保存到本地的缓存文件路径
      */
-    private void saveToAlbum(Context context, File resource) {
-        Random random = new Random();
-        String imageFileName = "JPEG_" + "down" + random.nextInt(10) + ".jpg";
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory
-                (Environment.DIRECTORY_PICTURES) + "nemo");
-        File file = new File(storageDir, imageFileName);
-        boolean isCopySuccess = copy(resource, file);
-        if (isCopySuccess) {
-            //发送广播通知
-            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
-            Toast.makeText(context, "图片保存到相册成功", Toast.LENGTH_LONG).show();
-            resource.delete();
-        } else {
-            Toast.makeText(context, "图片保存到相册失败", Toast.LENGTH_LONG).show();
+    private static void saveToAlbum(Context context, File resource) {
+        try {
+            Random random = new Random();
+            String imageFileName = "JPEG_" + "down" + random.nextInt(10) + ".jpg";
+            File storageDir = new File(Environment.getExternalStoragePublicDirectory
+                    (Environment.DIRECTORY_PICTURES) + "nemo");
+            File file = new File(storageDir, imageFileName);
+            boolean isCopySuccess = copy(resource, file);
+            if (isCopySuccess) {
+                //发送广播通知
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
+                Toast.makeText(context, "图片保存到相册成功", Toast.LENGTH_LONG).show();
+                resource.delete();
+            } else {
+                Toast.makeText(context, "图片保存到相册失败", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("DownImageUtil", Objects.requireNonNull(e.getMessage()));
         }
+
     }
 
     public static boolean copy(File source, File dest) {
