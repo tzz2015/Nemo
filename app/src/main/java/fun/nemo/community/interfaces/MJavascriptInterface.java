@@ -23,7 +23,13 @@ public class MJavascriptInterface {
     }
 
     @android.webkit.JavascriptInterface
+    public void log(String dse) {
+        Log.e(getClass().getSimpleName(), "js日记："+dse);
+    }
+
+    @android.webkit.JavascriptInterface
     public void openImage(String img, String[] array) {
+        Log.e(getClass().getSimpleName(), "点击图片：" + img);
         ArrayList<String> list = addImages(array);
         //查看当前点击图片的索引
         int i = list.indexOf(img);
@@ -46,4 +52,6 @@ public class MJavascriptInterface {
         }
         return list;
     }
+
+
 }

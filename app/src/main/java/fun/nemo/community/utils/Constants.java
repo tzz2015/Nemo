@@ -17,16 +17,28 @@ public class Constants {
             };
     public static String HOST_URL = "https://www.link-nemo.com/";
 
-    public static String INJECTION_JS = "javascript:(function(){" +
-            "var objs = document.getElementsByTagName(\"img\"); " +
-            " var array=new Array(); " +
-            " for(var j=0;j<objs.length;j++){ array[j]=objs[j].src; }" +
-            "for(var i=0;i<objs.length;i++)  " +
-            "{"
-            + "    objs[i].onclick=function()  " +
-            "    {  "
-            + "        window.imagelistener.openImage(this.src,array);  " +
-            "    }  " +
-            "}" +
-            "})()";
+    public static String INJECTION_JS = "javascript:(function(){\n" +
+            "            var objs = document.getElementsByTagName(\"img\");\n" +
+            "            var array=new Array();\n" +
+            "            for(var i=0;i<objs.length;i++)  {\n" +
+            "                objs[i].onclick=function()\n" +
+            "                {\n" +
+            "                 if(array.length == 0){\n" +
+            "                  var index=0;\n" +
+            "                   for(var j=0;j<objs.length;j++){\n" +
+            "                       window.imagelistener.log(\"parentNode:\"+  objs[j].parentNode.nodeName);\n" +
+            "                       if(objs[j].parentNode.nodeName.toString()==\"P\"){\n" +
+            "                           window.imagelistener.log(\"进来了:\"+  objs[j].src);\n" +
+            "                            array[index]=objs[j].src;\n" +
+            "                            index++;\n" +
+            "                       }\n" +
+            "\n" +
+            "                    }\n" +
+            "                 }\n" +
+            "                  if(this.parentNode.nodeName==\"P\"){\n" +
+            "                    window.imagelistener.openImage(this.src,array);\n" +
+            "                 }\n" +
+            "                }\n" +
+            "           }\n" +
+            "            })()";
 }

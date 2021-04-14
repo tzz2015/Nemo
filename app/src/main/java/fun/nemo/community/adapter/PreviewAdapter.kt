@@ -1,5 +1,6 @@
 package `fun`.nemo.community.adapter
 
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -21,6 +22,7 @@ class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter()
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val url = imageUrl[position]
+        Log.e(javaClass.simpleName,"position:$position url:$url")
         val photoView = PhotoView(container.context)
         photoView.layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
