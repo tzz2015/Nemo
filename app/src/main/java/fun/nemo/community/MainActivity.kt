@@ -1,8 +1,11 @@
 package `fun`.nemo.community
 
+import `fun`.nemo.community.utils.Constants.HOST_URL
+import `fun`.nemo.community.utils.Constants.WHITE_URL
 import `fun`.nemo.community.utils.StatusBarUtil
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,14 +21,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-    private val mWhiteUrl =
-        arrayOf(
-            "https://www.link-nemo.com/u/",
-            "https://www.link-nemo.com/my/article/category",
-            "https://www.link-nemo.com/personal/setting",
-            "https://www.link-nemo.com/moderator/dashboard",
-            "https://www.link-nemo.com/note"
-        )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
-        webView.loadUrl("https://www.link-nemo.com/")
+        webView.loadUrl(HOST_URL)
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
         webSettings.useWideViewPort = true //将图片调整到适合webview的大小 
@@ -48,19 +44,24 @@ class MainActivity : AppCompatActivity() {
         webSettings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
         webSettings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
         webSettings.displayZoomControls = false //隐藏原生的缩放控件
-        webSettings.cacheMode = WebSettings.LOAD_DEFAULT //关闭webview中缓存 
-        webSettings.allowFileAccess = true //设置可以访问文件 
+        webSettings.allowFileAccess = true //设置可以访问文件
         webSettings.javaScriptCanOpenWindowsAutomatically = true //支持通过JS打开新窗口 
         webSettings.loadsImagesAutomatically = true //支持自动加载图片
         webSettings.defaultTextEncodingName = "utf-8"//设置编码格式
         webView.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                view?.settings?.blockNetworkImage = true
+                super.onPageStarted(view, url, favicon)
+            }
+
             override fun onPageFinished(view: WebView?, url: String) {
+                view?.settings?.blockNetworkImage = false
                 changeStatusBarColor(url)
                 super.onPageFinished(view, url)
             }
 
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                if (url.startsWith("https://www.link-nemo.com")) {
+                if (url.startsWith(HOST_URL)) {
                     view.loadUrl(url)
                     return true
                 }
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                 request: WebResourceRequest?
             ): Boolean {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    if (request?.url.toString().contains("www.link-nemo.com")) {
+                    if (request?.url.toString().contains(HOST_URL)) {
                         view?.loadUrl(request?.url.toString())
                         return true
                     } else {
@@ -88,7 +89,7 @@ class MainActivity : AppCompatActivity() {
     private fun changeStatusBarColor(url: String) {
         Log.e("url", "url:$url")
         var isWhite = false
-        for (whiteUrl in mWhiteUrl) {
+        for (whiteUrl in WHITE_URL) {
             if (url.startsWith(whiteUrl)) {
                 isWhite = true
                 break
