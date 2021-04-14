@@ -18,27 +18,33 @@ public class Constants {
     public static String HOST_URL = "https://www.link-nemo.com/";
 
     public static String INJECTION_JS = "javascript:(function(){\n" +
-            "            var objs = document.getElementsByTagName(\"img\");\n" +
-            "            var array=new Array();\n" +
-            "            for(var i=0;i<objs.length;i++)  {\n" +
-            "                objs[i].onclick=function()\n" +
-            "                {\n" +
-            "                 if(array.length == 0){\n" +
-            "                  var index=0;\n" +
-            "                   for(var j=0;j<objs.length;j++){\n" +
-            "                       if(objs[j].parentNode.nodeName ==\"P\"){\n" +
-            "                            var isAvatar = false;\n" +
-            "                            window.imagelistener.log(\"有属性：\"+objs[j].class);\n" +
-            "                            array[index]=objs[j].src;\n" +
-            "                            index++;\n" +
+            "               var classNames = [\"blog-article-content\",\"bplist\",\"post\"];\n" +
+            "               var array=new Array();\n" +
+            "               var index=0;\n" +
+            "               for(var clsIdx=0;clsIdx < classNames.length; clsIdx ++){\n" +
+            "                   var clsName = classNames[clsIdx];\n" +
+            "                   var boxs = document.getElementsByClassName(clsName);\n" +
+            "                   if(!!boxs){\n" +
+            "                       for(var boxIdx=0;boxIdx < boxs.length; boxIdx ++){\n" +
+            "                           var box = boxs[boxIdx];\n" +
+            "                           var objs = box.getElementsByTagName(\"img\");\n" +
+            "                           console.log(objs);\n" +
+            "                           if(!!objs){\n" +
+            "                              for(var i=0;i<objs.length;i++)  {\n" +
+            "                                    objs[i].onclick=function(){\n" +
+            "                                       if(array.length == 0){\n" +
+            "                                            for(var j=0;j<objs.length;j++)  {\n" +
+            "                                                 if(objs[j].src.search(\"common_lodding.gif\") == -1){\n" +
+            "                                                     array[index]=objs[j].src;\n" +
+            "                                                     index++;\n" +
+            "                                                 }\n" +
+            "                                            }\n" +
+            "                                       }\n" +
+            "                                      window.imagelistener.openImage(this.src,array);\n" +
+            "                                    }\n" +
+            "                              }\n" +
+            "                           }\n" +
             "                       }\n" +
-            "\n" +
-            "                    }\n" +
-            "                 }\n" +
-            "                  if(this.parentNode.nodeName==\"P\"){\n" +
-            "                    window.imagelistener.openImage(this.src,array);\n" +
-            "                 }\n" +
-            "                }\n" +
-            "           }\n" +
-            "            })()";
+            "                   }\n" +
+            "               }})()";
 }
