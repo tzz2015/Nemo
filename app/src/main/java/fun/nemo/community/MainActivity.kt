@@ -59,7 +59,9 @@ class MainActivity : AppCompatActivity() {
                 view?.settings?.blockNetworkImage = false
                 changeStatusBarColor(url)
                 // 注入js
-                view?.loadUrl(INJECTION_JS)
+                if (url.startsWith(ARTICLE_URL)) {
+                    view?.loadUrl(INJECTION_JS)
+                }
                 super.onPageFinished(view, url)
             }
 
@@ -90,7 +92,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun changeStatusBarColor(url: String) {
-        Log.e("url", "url:$url")
+        Log.e("MainActivity", "url:$url")
         var isWhite = false
         for (whiteUrl in WHITE_URL) {
             if (url.startsWith(whiteUrl)) {

@@ -6,10 +6,10 @@ package fun.nemo.community.utils;
  * @date :  2021/4/14$ 9:45$
  */
 public class Constants {
-
+    public static String ARTICLE_URL = "https://www.link-nemo.com/u/";
     public static String[] WHITE_URL =
             {
-                    "https://www.link-nemo.com/u/",
+                    ARTICLE_URL,
                     "https://www.link-nemo.com/my/article/category",
                     "https://www.link-nemo.com/personal/setting",
                     "https://www.link-nemo.com/moderator/dashboard",

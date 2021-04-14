@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.activity_image_preview.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -26,6 +27,28 @@ class ImagePreviewActivity : AppCompatActivity() {
     private fun intView() {
         viewPager.adapter = PreviewAdapter(mImageUrls)
         viewPager.currentItem = mIndex
+        updatePreviewNum(mIndex)
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                updatePreviewNum(position)
+            }
+
+        })
+    }
+
+    private fun updatePreviewNum(index: Int) {
+        val showNum = "${index + 1}/${mImageUrls.size}"
+        tv_num.text = showNum
     }
 
     private fun initData() {
@@ -36,6 +59,9 @@ class ImagePreviewActivity : AppCompatActivity() {
                 mImageUrls.addAll(imageUrls)
             }
             mIndex = intent.getIntExtra("index", 0)
+            if (mIndex < 0) {
+                mIndex = 0
+            }
         }
     }
 
