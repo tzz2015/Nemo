@@ -21,6 +21,10 @@ javascript:(function(){
                                                  }
                                             }
                                        }
+                                       if(array.indexOf(this.src) == -1){
+                                         array[index]=this.src;
+                                         index++;
+                                       }
                                       window.imagelistener.openImage(this.src,array);
                                     }
                               }

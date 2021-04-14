@@ -40,6 +40,10 @@ public class Constants {
             "                                                 }\n" +
             "                                            }\n" +
             "                                       }\n" +
+            "                                       if(array.indexOf(this.src) == -1){\n" +
+            "                                         array[index]=this.src;\n" +
+            "                                         index++;\n" +
+            "                                       }\n" +
             "                                      window.imagelistener.openImage(this.src,array);\n" +
             "                                    }\n" +
             "                              }\n" +
