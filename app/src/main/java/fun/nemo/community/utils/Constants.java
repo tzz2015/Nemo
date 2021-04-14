@@ -26,9 +26,9 @@ public class Constants {
             "                 if(array.length == 0){\n" +
             "                  var index=0;\n" +
             "                   for(var j=0;j<objs.length;j++){\n" +
-            "                       window.imagelistener.log(\"parentNode:\"+  objs[j].parentNode.nodeName);\n" +
-            "                       if(objs[j].parentNode.nodeName.toString()==\"P\"){\n" +
-            "                           window.imagelistener.log(\"进来了:\"+  objs[j].src);\n" +
+            "                       if(objs[j].parentNode.nodeName ==\"P\"){\n" +
+            "                            var isAvatar = false;\n" +
+            "                            window.imagelistener.log(\"有属性：\"+objs[j].class);\n" +
             "                            array[index]=objs[j].src;\n" +
             "                            index++;\n" +
             "                       }\n" +

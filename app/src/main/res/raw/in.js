@@ -7,7 +7,9 @@ javascript:(function(){
                  if(array.length == 0){
                   var index=0;
                    for(var j=0;j<objs.length;j++){
-                       if(objs[j].parentNode.nodeName.toString()=="P"){
+                       if(objs[j].parentNode.nodeName =="P"){
+                            var isAvatar = false;
+                            window.imagelistener.log("有属性："+objs[j].class);
                             array[index]=objs[j].src;
                             index++;
                        }
