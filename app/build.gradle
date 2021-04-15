@@ -4,7 +4,24 @@ plugins {
 }
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+def keystoreFilepath = ''
+def keystorePSW = ''
+def keystoreAlias = ''
+def keystoreAliasPSW = ''
+// default keystore file, PLZ config file path in local.properties
+def keyfile
 
+Properties properties = new Properties()
+// local.properties file in the root director
+properties.load(project.rootProject.file('keystore.properties').newDataInputStream())
+keystoreFilepath = "./keystore.properties"
+
+if (keystoreFilepath) {
+    keystorePSW = properties.getProperty("storePassword")
+    keystoreAlias = properties.getProperty("keyAlias")
+    keystoreAliasPSW = properties.getProperty("keyPassword")
+    keyfile = file(properties.getProperty("storeFile"))
+}
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -19,12 +36,34 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
+    signingConfigs {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            keyAlias keystoreAlias
+            keyPassword keystoreAliasPSW
+            storeFile keyfile
+            storePassword keystorePSW
+        }
+        debug {
+            keyAlias keystoreAlias
+            keyPassword keystoreAliasPSW
+            storeFile keyfile
+            storePassword keystorePSW
         }
     }
+
+    buildTypes {
+        debug {
+            jniDebuggable true
+            signingConfig signingConfigs.debug
+        }
+
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles 'proguard.cfg'
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
