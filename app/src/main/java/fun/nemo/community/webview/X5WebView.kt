@@ -39,6 +39,20 @@ class X5WebView : WebView {
         mContext = context
         initWebView()
         initWebViewClient()
+        initWebChromeClient()
+    }
+
+    private fun initWebChromeClient() {
+        webChromeClient = object : WebChromeClient() {
+            override fun onShowFileChooser(
+                view: WebView?,
+                filePathCallback: ValueCallback<Array<Uri>>?,
+                fileChooserParams: FileChooserParams?
+            ): Boolean {
+                LogUtil.e("启动文件选择器")
+                return true
+            }
+        }
     }
 
 
@@ -89,6 +103,7 @@ class X5WebView : WebView {
             isHorizontalScrollBarEnabled = false
             //不允许弹性滑动
             overScrollMode = View.OVER_SCROLL_NEVER
+            saveFormData = true
             //硬件加速
             setLayerType(View.LAYER_TYPE_HARDWARE, null)
             addJavascriptInterface(MJavascriptInterface(mContext), "imagelistener")
