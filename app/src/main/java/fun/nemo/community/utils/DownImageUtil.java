@@ -67,10 +67,12 @@ public class DownImageUtil {
      */
     private static void saveToAlbum(Context context, File resource) {
         try {
-            Random random = new Random();
-            String imageFileName = "JPEG_" + "down" + random.nextInt(10) + ".jpg";
+            String imageFileName = "JPEG_" + "down" + System.currentTimeMillis() + ".jpg";
             File storageDir = new File(Environment.getExternalStoragePublicDirectory
-                    (Environment.DIRECTORY_PICTURES) + "nemo");
+                    (Environment.DIRECTORY_PICTURES) + "/nemo");
+            if(!storageDir.exists()){
+                storageDir.mkdirs();
+            }
             File file = new File(storageDir, imageFileName);
             boolean isCopySuccess = copy(resource, file);
             if (isCopySuccess) {
@@ -105,6 +107,7 @@ public class DownImageUtil {
             } catch (Exception e) {
                 dest.delete();
                 e.printStackTrace();
+                return false;
             }
         }
 
