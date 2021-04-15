@@ -1,6 +1,7 @@
 package fun.nemo.community.interfaces;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -16,9 +17,9 @@ import fun.nemo.community.ImagePreviewActivity;
  * @date :  2021/4/14$ 10:02$
  */
 public class MJavascriptInterface {
-    private Activity context;
+    private Context context;
 
-    public MJavascriptInterface(Activity context) {
+    public MJavascriptInterface(Context context) {
         this.context = context;
     }
 

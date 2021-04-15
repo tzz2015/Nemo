@@ -3,9 +3,13 @@
     <!--存储卡的Pictures目录放图片文件-->
     <external-path
         name="my_images"
-        path="Pictures"/>
+        path="Pictures" />
     <!--存储卡的flyaudiosmart2019/apk目录放安装包文件-->
     <external-path
         name="my_download"
-        path="flyaudiosmart2019/apk"/>
+        path="flyaudiosmart2019/apk" />
+
+    <external-path
+        name="external_storage_root"
+        path="." />
 </paths>
