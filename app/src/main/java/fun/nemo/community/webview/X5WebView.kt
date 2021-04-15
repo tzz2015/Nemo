@@ -5,6 +5,7 @@ import `fun`.nemo.community.interfaces.MJavascriptInterface
 import `fun`.nemo.community.utils.Constants
 import `fun`.nemo.community.utils.LogUtil
 import `fun`.nemo.community.utils.StatusBarUtil
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -13,9 +14,11 @@ import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
-import android.view.KeyEvent
-import com.tencent.smtt.export.external.interfaces.WebResourceRequest
+import android.view.View
+import com.tencent.smtt.export.external.interfaces.*
 import com.tencent.smtt.sdk.*
+import com.tencent.smtt.sdk.WebSettings
+import com.tencent.smtt.sdk.WebView
 
 /**
  * @description:
@@ -26,45 +29,70 @@ class X5WebView : WebView {
 
     private val mContext: Context
 
-
-    init {
+    constructor(context: Context) : super(context) {
+        mContext = context
         initWebView()
         initWebViewClient()
     }
 
-    constructor(context: Context) : super(context) {
-        mContext = context
-    }
-
     constructor(context: Context, var2: AttributeSet) : super(context, var2) {
         mContext = context
+        initWebView()
+        initWebViewClient()
     }
 
 
+    @SuppressLint("AddJavascriptInterface", "SetJavaScriptEnabled")
     private fun initWebView() {
-        val webSettings = settings
-        webSettings.javaScriptEnabled = true
-        webSettings.useWideViewPort = true //将图片调整到适合webview的大小
-        webSettings.loadWithOverviewMode = true // 缩放至屏幕的大小
-        webSettings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
-        webSettings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
-        webSettings.displayZoomControls = false //隐藏原生的缩放控件
-        webSettings.allowFileAccess = true //设置可以访问文件
-        webSettings.javaScriptCanOpenWindowsAutomatically = true //支持通过JS打开新窗口
-        webSettings.loadsImagesAutomatically = true //支持自动加载图片
-        webSettings.defaultTextEncodingName = "utf-8"//设置编码格式
-        webSettings.layoutAlgorithm = WebSettings.LayoutAlgorithm.NARROW_COLUMNS
-        webSettings.setSupportMultipleWindows(true)
-        webSettings.setAppCacheEnabled(true)
-        webSettings.domStorageEnabled = true
-        webSettings.setGeolocationEnabled(true)
-        webSettings.setAppCacheMaxSize(Long.MAX_VALUE)
-        webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH)
-        addJavascriptInterface(MJavascriptInterface(mContext), "imagelistener")
-        isHorizontalFadingEdgeEnabled = false
-        isVerticalScrollBarEnabled = false
-
-
+        settings.apply {
+            //设置默认编码格式为“UTF-8”
+            defaultTextEncodingName = "UTF-8"
+            //设置DOM存储可用
+            domStorageEnabled = true
+            //js可用
+            javaScriptEnabled = true
+            //支持js打开新窗口
+            javaScriptCanOpenWindowsAutomatically = true
+            //支持自动加载图片
+            loadsImagesAutomatically = true
+            //设置数据库存储可用
+            databaseEnabled = true
+            //在File域下，能够执行任意的JavaScript代码，同源策略跨域访问能够对私有目录文件进行访问等
+            allowFileAccess = true
+            blockNetworkImage = false
+            blockNetworkLoads = false
+            //设置应用缓存可用
+            setAppCacheEnabled(true)
+            //设置缓存路径
+            setAppCachePath(context.applicationContext.getDir("cache", Context.MODE_PRIVATE).path)
+            //支持页面缩放
+            setSupportZoom(true)
+            //缩放使用放大放小按钮控制
+            builtInZoomControls = true
+            //不显示边界滑动条
+            displayZoomControls = false
+            //使用浏览器组件，建议使用
+            useWideViewPort = true
+            loadWithOverviewMode = true
+            //启用地理定位
+            setGeolocationEnabled(true)
+            //支持Http与Https混合模式
+            mixedContentMode = 0
+            //设置是否允许通过 file url 加载的 Js代码读取其他的本地文件（有风险，非内部网页建议关闭）
+            setAllowFileAccessFromFileURLs(true)
+            //设置是否允许通过 file url 加载的 Javascript 可以访问其他的源(包括http、https等源)（有风险，非内部网页建议关闭）
+            setAllowUniversalAccessFromFileURLs(true)
+            //调整线程优先级（一般不建议调整，默认normal）
+            setRenderPriority(WebSettings.RenderPriority.HIGH)
+            //取消垂直和水平方向的滑动栏
+            isVerticalScrollBarEnabled = false
+            isHorizontalScrollBarEnabled = false
+            //不允许弹性滑动
+            overScrollMode = View.OVER_SCROLL_NEVER
+            //硬件加速
+            setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            addJavascriptInterface(MJavascriptInterface(mContext), "imagelistener")
+        }
     }
 
     private fun initWebViewClient() {
@@ -81,7 +109,7 @@ class X5WebView : WebView {
                 super.onPageFinished(view, url)
             }
 
-            override fun shouldOverrideUrlLoading(view: WebView?, p1: String?): Boolean {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
                 if (url.startsWith(Constants.HOST_URL)) {
                     view?.loadUrl(url)
                     return true
@@ -90,21 +118,24 @@ class X5WebView : WebView {
                 return true
             }
 
-
             override fun shouldOverrideUrlLoading(
                 view: WebView?,
                 request: WebResourceRequest?
             ): Boolean {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    if (request?.url.toString().contains(Constants.HOST_URL)) {
+                    if (request?.url.toString().contains(Constants.LAST_HOST)) {
                         view?.loadUrl(request?.url.toString())
-                        return true
                     } else {
                         openOurWebView(request?.url.toString())
                     }
                 }
                 return true
             }
+
+            override fun onReceivedSslError(p0: WebView?, p1: SslErrorHandler?, p2: SslError?) {
+                p1?.proceed()
+            }
+
         }
     }
 

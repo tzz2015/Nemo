@@ -6,6 +6,7 @@ package fun.nemo.community.utils;
  * @date :  2021/4/14$ 9:45$
  */
 public class Constants {
+    public static String LAST_HOST = "www.link-nemo.com/";
     public static String ARTICLE_URL = "https://www.link-nemo.com/u/";
     public static String[] WHITE_URL =
             {
@@ -15,7 +16,7 @@ public class Constants {
                     "https://www.link-nemo.com/moderator/dashboard",
                     "https://www.link-nemo.com/note"
             };
-    public static String HOST_URL = "https://www.link-nemo.com/";
+    public static String HOST_URL = "https://" + LAST_HOST;
 
     public static String INJECTION_JS = "javascript:(function(){\n" +
             "               var classNames = [\"blog-article-content\",\"bplist\",\"post\"];\n" +
