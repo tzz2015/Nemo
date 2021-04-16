@@ -1,19 +1,29 @@
 package `fun`.nemo.community
 
-import `fun`.nemo.community.utils.Constants.*
+import `fun`.nemo.community.utils.Constants.HOST_URL
 import `fun`.nemo.community.utils.LogUtil
 import `fun`.nemo.community.webview.X5WebView
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
+import android.util.Log
 import android.view.KeyEvent
 import android.view.KeyEvent.KEYCODE_BACK
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.tencent.smtt.export.external.TbsCoreSettings
+import com.tencent.smtt.sdk.QbSdk
+import com.tencent.smtt.sdk.QbSdk.PreInitCallback
+import com.tencent.smtt.sdk.TbsListener
 import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
-import java.lang.Exception
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -24,6 +34,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         initWebView()
         initRefresh()
+        checkStorageManagerPermission(this)
+    }
+
+    private fun checkStorageManagerPermission(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+            !Environment.isExternalStorageManager()
+        ) {
+            val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+        } else {
+            initTbsSettings()
+        }
     }
 
 
@@ -103,9 +126,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initTbsSettings() {
+        // 在调用TBS初始化、创建WebView之前进行如下配置
+        val map: HashMap<String, Any> = HashMap<String, Any>()
+        map[TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER] = true
+        map[TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE] = true
+        QbSdk.initTbsSettings(map)
+        QbSdk.setDownloadWithoutWifi(true)
+        QbSdk.setTbsListener(object : TbsListener {
+            override fun onDownloadFinish(i: Int) {
+                Log.e("app", "onDownloadFinish -->下载X5内核完成：$i")
+            }
+
+            override fun onInstallFinish(i: Int) {
+                Log.e("app", "onInstallFinish -->安装X5内核进度：$i")
+            }
+
+            override fun onDownloadProgress(i: Int) {
+                Log.e("app", "onDownloadProgress -->下载X5内核进度：$i")
+            }
+        })
+        val cb: PreInitCallback = object : PreInitCallback {
+            override fun onViewInitFinished(arg0: Boolean) {
+                //x5內核初始化完成的回调，true表x5内核加载成功，否则表加载失败，会自动切换到系统内核。
+                Log.e("app", " 内核加载 $arg0")
+            }
+
+            override fun onCoreInitFinished() {}
+        }
+        //x5内核初始化接口
+        QbSdk.initX5Environment(this, cb)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         webView.destroy()
     }
+
 
 }
