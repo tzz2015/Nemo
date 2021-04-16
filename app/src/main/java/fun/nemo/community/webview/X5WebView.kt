@@ -18,6 +18,7 @@ import android.view.View
 import com.tencent.smtt.export.external.interfaces.*
 import com.tencent.smtt.sdk.*
 import com.tencent.smtt.sdk.WebSettings
+import com.tencent.smtt.sdk.WebSettings.LOAD_CACHE_ELSE_NETWORK
 import com.tencent.smtt.sdk.WebView
 
 /**
@@ -73,7 +74,6 @@ class X5WebView : WebView {
             databaseEnabled = true
             //在File域下，能够执行任意的JavaScript代码，同源策略跨域访问能够对私有目录文件进行访问等
             allowFileAccess = true
-            blockNetworkImage = false
             blockNetworkLoads = false
             //设置应用缓存可用
             setAppCacheEnabled(true)
@@ -108,6 +108,11 @@ class X5WebView : WebView {
             setLayerType(View.LAYER_TYPE_HARDWARE, null)
             addJavascriptInterface(MJavascriptInterface(mContext), "imagelistener")
         }
+        if (x5WebViewExtension != null) {
+            x5WebViewExtension.isHorizontalScrollBarEnabled = false//水平不显示滚动按钮
+            x5WebViewExtension.isVerticalScrollBarEnabled = false //垂直不显示滚动按钮
+        }
+
     }
 
     private fun initWebViewClient() {
