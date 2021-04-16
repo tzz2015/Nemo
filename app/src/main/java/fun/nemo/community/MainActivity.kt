@@ -14,7 +14,6 @@ import android.provider.Settings
 import android.util.Log
 import android.view.KeyEvent
 import android.view.KeyEvent.KEYCODE_BACK
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tencent.smtt.export.external.TbsCoreSettings
 import com.tencent.smtt.sdk.QbSdk
@@ -128,7 +127,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initTbsSettings() {
         // 在调用TBS初始化、创建WebView之前进行如下配置
-        val map: HashMap<String, Any> = HashMap<String, Any>()
+        val map: HashMap<String, Any> = HashMap()
         map[TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER] = true
         map[TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE] = true
         QbSdk.initTbsSettings(map)

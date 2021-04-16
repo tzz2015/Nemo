@@ -1,15 +1,22 @@
 package `fun`.nemo.community.adapter
 
-import `fun`.nemo.community.R
 import `fun`.nemo.community.utils.DownImageUtil
+import `fun`.nemo.community.utils.LogUtil
+import `fun`.nemo.community.utils.ScreenUtils
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.github.chrisbanes.photoview.PhotoView
+import java.util.*
 
 
 /**
@@ -22,6 +29,8 @@ class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter()
         .centerInside()
         .override(360, 360)
 
+    private val mMap: HashMap<String, PhotoView> = HashMap()
+
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
         return view === `object`
     }
@@ -29,20 +38,55 @@ class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter()
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         var url = imageUrl[position]
         Log.e(javaClass.simpleName, "position:$position url:$url")
-        val photoView = PhotoView(container.context)
-        if (DownImageUtil.isExistLocalFile(url)) {
-            url = DownImageUtil.getSavePathName(url)
-            Glide.with(container.context)
-                .load(url)
-                .into(photoView)
-        } else {
-            Glide.with(container.context)
-                .asBitmap()
-                .apply(myOptions)
-                .load(url)
-                .skipMemoryCache(true)
-                .into(photoView)
+        var photoView: PhotoView? = mMap[url]
+        if (photoView == null) {
+            photoView = PhotoView(container.context)
+            photoView.layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            if (DownImageUtil.isExistLocalFile(url)) {
+                url = DownImageUtil.getSavePathName(url)
+                Glide.with(container.context)
+                    .load(url)
+                    .into(photoView)
+            } else {
+                photoView.layoutParams = LinearLayout.LayoutParams(
+                    ScreenUtils.px2dip(container.context,30f),
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                Glide.with(container.context)
+                    .load(url)
+                    .listener(object : RequestListener<Drawable>{
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                           return false
+                        }
+
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            LogUtil.e("加载完毕：$url")
+                            photoView.layoutParams.width=ViewGroup.LayoutParams.MATCH_PARENT
+                            photoView.layoutParams.height=ViewGroup.LayoutParams.MATCH_PARENT
+                            return false
+                        }
+
+                    })
+                    .into(photoView)
+
+            }
+            mMap[url] = photoView
         }
+
 
         container.addView(photoView)
         return photoView
@@ -62,4 +106,5 @@ class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter()
     override fun getItemPosition(`object`: Any): Int {
         return POSITION_NONE
     }
+
 }
