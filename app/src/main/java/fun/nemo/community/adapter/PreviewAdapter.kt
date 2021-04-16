@@ -1,15 +1,13 @@
 package `fun`.nemo.community.adapter
 
+import `fun`.nemo.community.R
 import `fun`.nemo.community.utils.DownImageUtil
-import `fun`.nemo.community.utils.ScreenUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.github.chrisbanes.photoview.PhotoView
 
@@ -42,14 +40,11 @@ class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter()
                 .asBitmap()
                 .apply(myOptions)
                 .load(url)
+                .skipMemoryCache(true)
                 .into(photoView)
         }
 
-        container.addView(
-            photoView,
-            ViewPager.LayoutParams.MATCH_PARENT,
-            ViewPager.LayoutParams.MATCH_PARENT
-        )
+        container.addView(photoView)
         return photoView
     }
 
