@@ -107,6 +107,7 @@ class X5WebView : WebView {
             //硬件加速
             setLayerType(View.LAYER_TYPE_HARDWARE, null)
             addJavascriptInterface(MJavascriptInterface(mContext), "imagelistener")
+            setUserAgent("From:很帅的飞飞")
         }
         if (x5WebViewExtension != null) {
             x5WebViewExtension.isHorizontalScrollBarEnabled = false//水平不显示滚动按钮

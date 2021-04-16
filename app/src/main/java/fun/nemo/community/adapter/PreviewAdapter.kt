@@ -18,8 +18,8 @@ import com.github.chrisbanes.photoview.PhotoView
  * @date :  2021/4/14$ 11:05$
  */
 class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter() {
-    var myOptions = RequestOptions()
-        .centerCrop()
+    private var myOptions = RequestOptions()
+        .centerInside()
         .override(360, 360)
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
