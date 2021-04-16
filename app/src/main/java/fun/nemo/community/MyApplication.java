@@ -2,6 +2,8 @@ package fun.nemo.community;
 
 import android.app.Application;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import com.tencent.smtt.export.external.TbsCoreSettings;
 import com.tencent.smtt.sdk.QbSdk;
@@ -50,6 +52,7 @@ public class MyApplication extends Application {
             public void onViewInitFinished(boolean arg0) {
                 //x5內核初始化完成的回调，true表x5内核加载成功，否则表加载失败，会自动切换到系统内核。
                 Log.e("app", " 内核加载 " + arg0);
+                Toast.makeText(MyApplication.this,"启用x5内核："+arg0,Toast.LENGTH_LONG).show();
             }
 
             @Override
