@@ -10,6 +10,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.activity_image_preview.*
+import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.lang.Exception
@@ -131,6 +132,8 @@ class ImagePreviewActivity : AppCompatActivity() {
             LogUtil.e(e.message)
         }
     }
+
+
 
 
 }

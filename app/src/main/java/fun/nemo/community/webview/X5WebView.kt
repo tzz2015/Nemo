@@ -29,11 +29,15 @@ import com.tencent.smtt.sdk.WebView
 class X5WebView : WebView {
 
     private val mContext: Context
+    private var mFilePathCallback: ValueCallback<Array<Uri>>? = null
+    private var mWebViewCallback: WebViewCallBack? = null
 
     constructor(context: Context) : super(context) {
         mContext = context
         initWebView()
         initWebViewClient()
+        initWebChromeClient()
+
     }
 
     constructor(context: Context, var2: AttributeSet) : super(context, var2) {
@@ -50,7 +54,8 @@ class X5WebView : WebView {
                 filePathCallback: ValueCallback<Array<Uri>>?,
                 fileChooserParams: FileChooserParams?
             ): Boolean {
-                LogUtil.e("启动文件选择器")
+                mFilePathCallback = filePathCallback
+                mWebViewCallback?.openPhotoSelect()
                 return true
             }
         }
@@ -200,5 +205,26 @@ class X5WebView : WebView {
             StatusBarUtil.setStatusBarMode(mContext as Activity, false, R.color.purple_700)
         }
     }
+
+    interface WebViewCallBack {
+        fun openPhotoSelect()
+    }
+
+    fun setWebViewCallBack(webViewCallBack: WebViewCallBack) {
+        this.mWebViewCallback = webViewCallBack
+    }
+
+    fun uploadFile(uri:Uri?){
+        uri?.let {
+            mFilePathCallback?.onReceiveValue(arrayOf(it))
+        }
+    }
+
+    override fun destroy() {
+        super.destroy()
+        mFilePathCallback = null
+        mWebViewCallback = null
+    }
+
 
 }
