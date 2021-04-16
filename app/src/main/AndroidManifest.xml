@@ -19,6 +19,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/favicon"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/Theme.Nemo"
         android:usesCleartextTraffic="true">
         <provider
