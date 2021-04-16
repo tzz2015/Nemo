@@ -32,9 +32,6 @@ class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter()
         var url = imageUrl[position]
         Log.e(javaClass.simpleName, "position:$position url:$url")
         val photoView = PhotoView(container.context)
-        val screenWidth = ScreenUtils.getScreenWidth(container.context) / 4
-        val screenHeight = ScreenUtils.getScreenHeight(container.context) / 4
-
         if (DownImageUtil.isExistLocalFile(url)) {
             url = DownImageUtil.getSavePathName(url)
             Glide.with(container.context)
@@ -50,8 +47,8 @@ class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter()
 
         container.addView(
             photoView,
-            screenWidth,
-            screenHeight
+            ViewPager.LayoutParams.MATCH_PARENT,
+            ViewPager.LayoutParams.MATCH_PARENT
         )
         return photoView
     }
