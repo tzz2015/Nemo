@@ -6,6 +6,7 @@ import `fun`.nemo.community.utils.LogUtil
 import `fun`.nemo.community.utils.StatusBarUtil
 import android.Manifest
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.activity_image_preview.*
@@ -20,7 +21,6 @@ class ImagePreviewActivity : AppCompatActivity() {
     private val tag = "ImagePreviewActivity"
     private val mImageUrls: MutableList<String> = Collections.synchronizedList(ArrayList())
     private var mIndex = 0
-    private var mDownUrl: String? = null
 
     companion object {
         private const val WRITE_EXTERNAL_STORAGE_CODE = 666
@@ -37,7 +37,7 @@ class ImagePreviewActivity : AppCompatActivity() {
     private fun intView() {
         viewPager.adapter = PreviewAdapter(mImageUrls)
         viewPager.currentItem = mIndex
-        updatePreviewNum(mIndex)
+        updatePreviewNum()
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
@@ -51,11 +51,10 @@ class ImagePreviewActivity : AppCompatActivity() {
 
             override fun onPageSelected(position: Int) {
                 mIndex = position
-                updatePreviewNum(position)
+                updatePreviewNum()
             }
         })
         bt_down.setOnClickListener {
-            mDownUrl = mImageUrls[mIndex]
             saveImageToLocal()
         }
     }
@@ -65,8 +64,7 @@ class ImagePreviewActivity : AppCompatActivity() {
      */
     private fun downImageToLocal() {
         val url = mImageUrls[mIndex]
-        LogUtil.e("图片是否已经下载：${DownImageUtil.isExistLocalFile(url)}")
-        DownImageUtil.saveImgToLocal(this, url, false, object : DownImageUtil.DownCallback {
+        DownImageUtil.saveImgToLocal(this, url, true, object : DownImageUtil.DownCallback {
             override fun fail(url: String?) {
 
             }
@@ -75,15 +73,20 @@ class ImagePreviewActivity : AppCompatActivity() {
                 if (!isFinishing && viewPager != null) {
                     viewPager.adapter?.notifyDataSetChanged()
                 }
+                updatePreviewNum()
             }
 
         })
     }
 
-    private fun updatePreviewNum(index: Int) {
-        val showNum = "${index + 1}/${mImageUrls.size}"
+    /**
+     * 更新索引
+     */
+    private fun updatePreviewNum() {
+        val showNum = "${mIndex + 1}/${mImageUrls.size}"
         tv_num.text = showNum
-        downImageToLocal()
+        val url = mImageUrls[mIndex]
+        bt_down.visibility = if (DownImageUtil.isExistLocalFile(url)) View.GONE else View.VISIBLE
     }
 
     private fun initData() {
@@ -107,7 +110,7 @@ class ImagePreviewActivity : AppCompatActivity() {
             Manifest.permission.READ_EXTERNAL_STORAGE
         )
         if (EasyPermissions.hasPermissions(this, *perms)) {
-            DownImageUtil.saveImgToLocal(this, mDownUrl, true)
+            downImageToLocal()
         } else {
             EasyPermissions.requestPermissions(
                 this, "", WRITE_EXTERNAL_STORAGE_CODE, *perms

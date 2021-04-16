@@ -1,6 +1,5 @@
 package `fun`.nemo.community.adapter
 
-import `fun`.nemo.community.R
 import `fun`.nemo.community.utils.DownImageUtil
 import android.util.Log
 import android.view.View
@@ -67,4 +66,7 @@ class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter()
         container.removeView(`object` as View)
     }
 
+    override fun getItemPosition(`object`: Any): Int {
+        return POSITION_NONE
+    }
 }
