@@ -1,6 +1,7 @@
 package `fun`.nemo.community.adapter
 
 import `fun`.nemo.community.R
+import `fun`.nemo.community.utils.DownImageUtil
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -27,18 +28,26 @@ class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter()
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val url = imageUrl[position]
+        var url = imageUrl[position]
         Log.e(javaClass.simpleName, "position:$position url:$url")
         val photoView = PhotoView(container.context)
         photoView.layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-        Glide.with(container.context)
-            .asBitmap()
-            .apply(myOptions)
-            .load(url)
-            .into(photoView)
+        if (DownImageUtil.isExistLocalFile(url)) {
+            url = DownImageUtil.getSavePathName(url)
+            Glide.with(container.context)
+                .load(url)
+                .into(photoView)
+        } else {
+            Glide.with(container.context)
+                .asBitmap()
+                .apply(myOptions)
+                .load(url)
+                .into(photoView)
+        }
+
         container.addView(
             photoView,
             ViewPager.LayoutParams.MATCH_PARENT,

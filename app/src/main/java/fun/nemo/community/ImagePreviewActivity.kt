@@ -50,8 +50,8 @@ class ImagePreviewActivity : AppCompatActivity() {
             }
 
             override fun onPageSelected(position: Int) {
-                updatePreviewNum(position)
                 mIndex = position
+                updatePreviewNum(position)
             }
         })
         bt_down.setOnClickListener {
@@ -60,9 +60,30 @@ class ImagePreviewActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 下载图片到本地
+     */
+    private fun downImageToLocal() {
+        val url = mImageUrls[mIndex]
+        LogUtil.e("图片是否已经下载：${DownImageUtil.isExistLocalFile(url)}")
+        DownImageUtil.saveImgToLocal(this, url, false, object : DownImageUtil.DownCallback {
+            override fun fail(url: String?) {
+
+            }
+
+            override fun success(url: String?) {
+                if (!isFinishing && viewPager != null) {
+                    viewPager.adapter?.notifyDataSetChanged()
+                }
+            }
+
+        })
+    }
+
     private fun updatePreviewNum(index: Int) {
         val showNum = "${index + 1}/${mImageUrls.size}"
         tv_num.text = showNum
+        downImageToLocal()
     }
 
     private fun initData() {
@@ -86,7 +107,7 @@ class ImagePreviewActivity : AppCompatActivity() {
             Manifest.permission.READ_EXTERNAL_STORAGE
         )
         if (EasyPermissions.hasPermissions(this, *perms)) {
-            DownImageUtil.saveImgToLocal(this, mDownUrl)
+            DownImageUtil.saveImgToLocal(this, mDownUrl, true)
         } else {
             EasyPermissions.requestPermissions(
                 this, "", WRITE_EXTERNAL_STORAGE_CODE, *perms
