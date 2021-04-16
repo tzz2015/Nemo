@@ -2,6 +2,7 @@ package `fun`.nemo.community
 
 import `fun`.nemo.community.adapter.PreviewAdapter
 import `fun`.nemo.community.utils.DownImageUtil
+import `fun`.nemo.community.utils.LogUtil
 import `fun`.nemo.community.utils.StatusBarUtil
 import android.Manifest
 import android.os.Bundle
@@ -10,6 +11,7 @@ import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.activity_image_preview.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -18,6 +20,7 @@ class ImagePreviewActivity : AppCompatActivity() {
     private val tag = "ImagePreviewActivity"
     private val mImageUrls: MutableList<String> = Collections.synchronizedList(ArrayList())
     private var mIndex = 0
+    private var mDownUrl: String? = null
 
     companion object {
         private const val WRITE_EXTERNAL_STORAGE_CODE = 666
@@ -52,7 +55,8 @@ class ImagePreviewActivity : AppCompatActivity() {
             }
         })
         bt_down.setOnClickListener {
-            saveImageToLocal(mImageUrls[mIndex])
+            mDownUrl = mImageUrls[mIndex]
+            saveImageToLocal()
         }
     }
 
@@ -76,13 +80,13 @@ class ImagePreviewActivity : AppCompatActivity() {
     }
 
     @AfterPermissionGranted(WRITE_EXTERNAL_STORAGE_CODE)
-    private fun saveImageToLocal(url: String) {
+    private fun saveImageToLocal() {
         val perms = arrayOf(
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE
         )
         if (EasyPermissions.hasPermissions(this, *perms)) {
-            DownImageUtil.saveImgToLocal(this, url)
+            DownImageUtil.saveImgToLocal(this, mDownUrl)
         } else {
             EasyPermissions.requestPermissions(
                 this, "", WRITE_EXTERNAL_STORAGE_CODE, *perms
@@ -97,7 +101,11 @@ class ImagePreviewActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+        try {
+            EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+        } catch (e: Exception) {
+            LogUtil.e(e.message)
+        }
     }
 
 
