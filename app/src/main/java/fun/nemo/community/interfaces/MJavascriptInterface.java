@@ -1,9 +1,9 @@
 package fun.nemo.community.interfaces;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.webkit.JavascriptInterface;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,12 +23,14 @@ public class MJavascriptInterface {
         this.context = context;
     }
 
-    @android.webkit.JavascriptInterface
+    @NotProguard
+    @JavascriptInterface
     public void log(String dse) {
-        Log.e(getClass().getSimpleName(), "js日记："+dse);
+        Log.e(getClass().getSimpleName(), "js日记：" + dse);
     }
 
-    @android.webkit.JavascriptInterface
+    @NotProguard
+    @JavascriptInterface
     public void openImage(String img, String[] array) {
         Log.e(getClass().getSimpleName(), "点击图片：" + img);
         ArrayList<String> list = addImages(array);
