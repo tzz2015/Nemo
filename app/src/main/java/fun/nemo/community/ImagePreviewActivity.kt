@@ -1,24 +1,25 @@
 package `fun`.nemo.community
 
-import `fun`.nemo.community.adapter.PreviewAdapter
+import `fun`.nemo.community.adapter.PreviewFragmentStateAdapter
+import `fun`.nemo.community.fragment.PreviewFragment
+import `fun`.nemo.community.utils.Constants.BUNDLE_URL
 import `fun`.nemo.community.utils.DownImageUtil
 import `fun`.nemo.community.utils.LogUtil
 import `fun`.nemo.community.utils.StatusBarUtil
 import android.Manifest
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.widget.ViewPager2
 import kotlinx.android.synthetic.main.activity_image_preview.*
-import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
-import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class ImagePreviewActivity : AppCompatActivity() {
+class ImagePreviewActivity : FragmentActivity() {
     private val tag = "ImagePreviewActivity"
     private val mImageUrls: MutableList<String> = Collections.synchronizedList(ArrayList())
     private var mIndex = 0
@@ -35,22 +36,14 @@ class ImagePreviewActivity : AppCompatActivity() {
         intView()
     }
 
+
     private fun intView() {
-        viewPager.adapter = PreviewAdapter(mImageUrls)
-        viewPager.currentItem = mIndex
+        viewPager.adapter = PreviewFragmentStateAdapter(this, getFragmentList())
+        viewPager.setCurrentItem(mIndex, false)
         updatePreviewNum()
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-            }
-
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
-
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
                 mIndex = position
                 updatePreviewNum()
             }
@@ -58,6 +51,19 @@ class ImagePreviewActivity : AppCompatActivity() {
         bt_down.setOnClickListener {
             saveImageToLocal()
         }
+    }
+
+    private fun getFragmentList(): MutableList<Fragment> {
+        val fragmentList = ArrayList<Fragment>()
+        for (url in mImageUrls) {
+            val fragment = PreviewFragment()
+            val bundle = Bundle()
+            bundle.putString(BUNDLE_URL, url)
+            fragment.arguments = bundle
+            fragmentList.add(fragment)
+        }
+
+        return fragmentList
     }
 
     /**
@@ -132,8 +138,6 @@ class ImagePreviewActivity : AppCompatActivity() {
             LogUtil.e(e.message)
         }
     }
-
-
 
 
 }

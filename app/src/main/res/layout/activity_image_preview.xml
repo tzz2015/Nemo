@@ -7,7 +7,7 @@
     android:background="@color/black"
     tools:context=".ImagePreviewActivity">
 
-    <androidx.viewpager.widget.ViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"/>
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/bt_down"
-        android:text="下载高清图"
+        android:text="保存到相册"
         android:textSize="12sp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"

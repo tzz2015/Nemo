@@ -52,4 +52,6 @@ public class Constants {
             "                       }\n" +
             "                   }\n" +
             "               }})()";
+
+    public static String BUNDLE_URL="bundle_url";
 }

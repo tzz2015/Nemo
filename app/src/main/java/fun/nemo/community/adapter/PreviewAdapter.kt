@@ -4,7 +4,6 @@ import `fun`.nemo.community.utils.DownImageUtil
 import `fun`.nemo.community.utils.LogUtil
 import `fun`.nemo.community.utils.ScreenUtils
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -13,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.github.chrisbanes.photoview.PhotoView
 import java.util.*
@@ -25,9 +23,7 @@ import java.util.*
  * @date :  2021/4/14$ 11:05$
  */
 class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter() {
-    private var myOptions = RequestOptions()
-        .centerInside()
-        .override(360, 360)
+
 
     private val mMap: HashMap<String, PhotoView> = HashMap()
 
@@ -37,7 +33,6 @@ class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter()
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         var url = imageUrl[position]
-        Log.e(javaClass.simpleName, "position:$position url:$url")
         var photoView: PhotoView? = mMap[url]
         if (photoView == null) {
             photoView = PhotoView(container.context)
@@ -52,19 +47,19 @@ class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter()
                     .into(photoView)
             } else {
                 photoView.layoutParams = LinearLayout.LayoutParams(
-                    ScreenUtils.px2dip(container.context,30f),
+                    ScreenUtils.px2dip(container.context, 10f),
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
                 Glide.with(container.context)
                     .load(url)
-                    .listener(object : RequestListener<Drawable>{
+                    .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(
                             e: GlideException?,
                             model: Any?,
                             target: Target<Drawable>?,
                             isFirstResource: Boolean
                         ): Boolean {
-                           return false
+                            return false
                         }
 
                         override fun onResourceReady(
@@ -75,8 +70,9 @@ class PreviewAdapter(private val imageUrl: MutableList<String>) : PagerAdapter()
                             isFirstResource: Boolean
                         ): Boolean {
                             LogUtil.e("加载完毕：$url")
-                            photoView.layoutParams.width=ViewGroup.LayoutParams.MATCH_PARENT
-                            photoView.layoutParams.height=ViewGroup.LayoutParams.MATCH_PARENT
+                            photoView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                            photoView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                            notifyDataSetChanged()
                             return false
                         }
 
