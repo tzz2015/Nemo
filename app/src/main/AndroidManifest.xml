@@ -25,6 +25,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Nemo"
         android:usesCleartextTraffic="true">
+
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="me.newtrekwang.android7.fileprovider"
