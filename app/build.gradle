@@ -60,7 +60,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles 'proguard.cfg'
+//            proguardFiles 'proguard.cfg'
         }
     }
 
