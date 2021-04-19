@@ -52,10 +52,11 @@ class PreviewFragment : Fragment() {
             Glide.with(this)
                 .load(url)
                 .into(photo_view)
+            photo_view.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
         } else {
             mProgressView.setProgress(0)
             mProgressView.show()
-            GlideUtil.load(context,url,photo_view,object :GlideLoadStatusListener{
+            GlideUtil.load(context, url, photo_view, object : GlideLoadStatusListener {
                 override fun onProgress(progress: Int) {
                     mProgressView.setProgress(progress)
                 }
@@ -68,42 +69,16 @@ class PreviewFragment : Fragment() {
                 override fun onLoadSuccess() {
                     mProgressView.dismiss()
                     ProgressInterceptor.removeListener(url)
+                    photo_view.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
                     LogUtil.e("加载完毕：$url")
                 }
 
             })
-            ProgressInterceptor.addListener(url
+            ProgressInterceptor.addListener(
+                url
             ) { progress -> mProgressView.setProgress(progress) }
 
-            /*GlideApp.with(this)
-                .load(url)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        mProgressView.dismiss()
-                        ProgressInterceptor.removeListener(url)
-                        return false
-                    }
 
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        mProgressView.dismiss()
-                        ProgressInterceptor.removeListener(url)
-                        LogUtil.e("加载完毕：$url")
-                        return false
-                    }
-
-                })
-                .into(photo_view)*/
         }
     }
 
