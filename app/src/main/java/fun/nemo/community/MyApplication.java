@@ -20,6 +20,7 @@ public class MyApplication extends Application {
     }
 
     private void initUm() {
+        UMConfigure.setLogEnabled(BuildConfig.DEBUG);
         //初始化组件化基础库, 所有友盟业务SDK都必须调用此初始化接口。
         UMConfigure.init(this, Constants.UM_APP_KEY, "Rom", UMConfigure.DEVICE_TYPE_PHONE, "");
         // 选用AUTO页面采集模式

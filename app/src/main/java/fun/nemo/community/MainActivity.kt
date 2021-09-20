@@ -5,12 +5,8 @@ import `fun`.nemo.community.utils.LogUtil
 import `fun`.nemo.community.webview.X5WebView
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.Settings
 import android.util.Log
 import android.view.KeyEvent
 import android.view.KeyEvent.KEYCODE_BACK
@@ -33,19 +29,22 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         initWebView()
         initRefresh()
-        checkStorageManagerPermission(this)
+        checkStorageManagerPermission()
     }
 
-    private fun checkStorageManagerPermission(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
-            !Environment.isExternalStorageManager()
-        ) {
-            val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(intent)
-        } else {
+    @AfterPermissionGranted(110)
+    fun checkStorageManagerPermission() {
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             initTbsSettings()
+        } else {
+            EasyPermissions.requestPermissions(
+                this,
+                "",
+                110,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
         }
+
     }
 
 
