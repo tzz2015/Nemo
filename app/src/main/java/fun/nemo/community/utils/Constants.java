@@ -53,5 +53,6 @@ public class Constants {
             "                   }\n" +
             "               }})()";
 
-    public static String BUNDLE_URL="bundle_url";
+    public static String BUNDLE_URL = "bundle_url";
+    public static String UM_APP_KEY = "61487f892a91a03cef4d7a32";
 }

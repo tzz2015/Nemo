@@ -92,4 +92,7 @@ dependencies {
     implementation 'com.kaopiz:kprogresshud:1.2.0'
     implementation 'com.squareup.okhttp3:okhttp:3.12.1'
     implementation 'com.github.bumptech.glide:okhttp3-integration:4.11.0'
+    implementation  'com.umeng.umsdk:common:9.4.2'// 必选
+    implementation  'com.umeng.umsdk:asms:1.4.1'// 必选
+    implementation 'com.umeng.umsdk:apm:1.4.2' // 错误分析升级为独立SDK，看crash数据请一定集成，可选
 }
