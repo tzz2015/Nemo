@@ -15,11 +15,12 @@ import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
-import com.tencent.smtt.export.external.interfaces.*
+import com.tencent.smtt.export.external.extension.proxy.ProxyWebChromeClientExtension
+import com.tencent.smtt.export.external.interfaces.SslError
+import com.tencent.smtt.export.external.interfaces.SslErrorHandler
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest
 import com.tencent.smtt.sdk.*
 import com.tencent.smtt.sdk.WebSettings
-import com.tencent.smtt.sdk.WebSettings.LOAD_CACHE_ELSE_NETWORK
-import com.tencent.smtt.sdk.WebView
 
 /**
  * @description:
@@ -130,8 +131,8 @@ class X5WebView : WebView {
 
             override fun onPageFinished(view: WebView?, url: String) {
                 view?.settings?.blockNetworkImage = false
-                changeStatusBarColor(url)
                 synchronizeCookie(view, url)
+                changeStatusBarColor(url)
                 super.onPageFinished(view, url)
             }
 
@@ -163,6 +164,14 @@ class X5WebView : WebView {
             }
 
         }
+        webChromeClientExtension = object : ProxyWebChromeClientExtension() {
+            /**
+             * 页面前进后退切换完成事件通知，目前step无实际赋值，此接口只是一个完成通知
+             */
+            override fun onBackforwardFinished(step: Int) {
+                changeStatusBarColor(url)
+            }
+        }
     }
 
     private fun synchronizeCookie(view: WebView?, url: String) {
@@ -190,20 +199,23 @@ class X5WebView : WebView {
         mContext.startActivity(intent)
     }
 
-    private fun changeStatusBarColor(url: String) {
-        Log.e("X5WebView", "url:$url")
-        var isWhite = false
-        for (whiteUrl in Constants.WHITE_URL) {
-            if (url.startsWith(whiteUrl)) {
-                isWhite = true
-                break
+    private fun changeStatusBarColor(url: String?) {
+        url?.let {
+            Log.e("X5WebView", "url:$url")
+            var isWhite = false
+            for (whiteUrl in Constants.WHITE_URL) {
+                if (it.startsWith(whiteUrl)) {
+                    isWhite = true
+                    break
+                }
+            }
+            if (isWhite) {
+                StatusBarUtil.setStatusBarMode(mContext as Activity, true, R.color.white)
+            } else {
+                StatusBarUtil.setStatusBarMode(mContext as Activity, false, R.color.purple_700)
             }
         }
-        if (isWhite) {
-            StatusBarUtil.setStatusBarMode(mContext as Activity, true, R.color.white)
-        } else {
-            StatusBarUtil.setStatusBarMode(mContext as Activity, false, R.color.purple_700)
-        }
+
     }
 
     interface WebViewCallBack {

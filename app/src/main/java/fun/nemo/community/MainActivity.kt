@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tencent.smtt.export.external.TbsCoreSettings
 import com.tencent.smtt.sdk.QbSdk
 import com.tencent.smtt.sdk.QbSdk.PreInitCallback
+import com.tencent.smtt.sdk.TbsDownloader
 import com.tencent.smtt.sdk.TbsListener
 import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -23,7 +24,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-
+    private var isReLoad = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     @AfterPermissionGranted(110)
     fun checkStorageManagerPermission() {
         if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            initTbsSettings()
+            initTbsListener()
         } else {
             EasyPermissions.requestPermissions(
                 this,
@@ -60,11 +61,14 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
     private fun initWebView() {
         webView.loadUrl(HOST_URL)
+        webView.settingsExtension.setContentCacheEnable(true)
+        webView.settingsExtension.setAutoRecoredAndRestoreScaleEnabled(true)
+        webView.settings.saveFormData = true
+        webView.settings.savePassword = true
         webView.setWebViewCallBack(object : X5WebView.WebViewCallBack {
             override fun openPhotoSelect() {
                 openAlbum()
             }
-
         })
     }
 
@@ -124,13 +128,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initTbsSettings() {
+    private fun initTbsSdk() {
         // 在调用TBS初始化、创建WebView之前进行如下配置
         val map: HashMap<String, Any> = HashMap()
         map[TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER] = true
         map[TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE] = true
         QbSdk.initTbsSettings(map)
         QbSdk.setDownloadWithoutWifi(true)
+    }
+
+    private fun initTbsListener() {
+        initTbsSdk()
         QbSdk.setTbsListener(object : TbsListener {
             override fun onDownloadFinish(i: Int) {
                 Log.e("app", "onDownloadFinish -->下载X5内核完成：$i")
@@ -145,9 +153,15 @@ class MainActivity : AppCompatActivity() {
             }
         })
         val cb: PreInitCallback = object : PreInitCallback {
-            override fun onViewInitFinished(arg0: Boolean) {
+            override fun onViewInitFinished(success: Boolean) {
                 //x5內核初始化完成的回调，true表x5内核加载成功，否则表加载失败，会自动切换到系统内核。
-                Log.e("app", " 内核加载 $arg0")
+                Log.e("app", " 内核加载 $success")
+                if (!success && !isReLoad) {
+                    isReLoad = true
+                    QbSdk.reset(application)
+                    initTbsSdk()
+                    TbsDownloader.startDownload(application)
+                }
             }
 
             override fun onCoreInitFinished() {}
