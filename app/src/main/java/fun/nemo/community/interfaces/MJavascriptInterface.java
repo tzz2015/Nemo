@@ -32,6 +32,7 @@ public class MJavascriptInterface {
     @NotProguard
     @JavascriptInterface
     public void openImage(String img, String[] array) {
+        if (array == null || array.length == 0) return;
         Log.e(getClass().getSimpleName(), "点击图片：" + img);
         ArrayList<String> list = addImages(array);
         //查看当前点击图片的索引

@@ -22,7 +22,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private var isReLoad = false
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,8 +61,8 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
     private fun initWebView() {
         webView.loadUrl(HOST_URL)
-        webView.settingsExtension.setContentCacheEnable(true)
-        webView.settingsExtension.setAutoRecoredAndRestoreScaleEnabled(true)
+        webView.settingsExtension?.setContentCacheEnable(true)
+        webView.settingsExtension?.setAutoRecoredAndRestoreScaleEnabled(true)
         webView.settings.saveFormData = true
         webView.settings.savePassword = true
         webView.setWebViewCallBack(object : X5WebView.WebViewCallBack {

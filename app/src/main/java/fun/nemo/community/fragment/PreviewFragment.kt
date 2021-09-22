@@ -14,7 +14,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.kaopiz.kprogresshud.KProgressHUD
+import com.umeng.analytics.MobclickAgent
 import kotlinx.android.synthetic.main.fragment_preview.*
+
 
 /**
 　　* @Description:
@@ -43,6 +45,17 @@ class PreviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         photo_view.post { loadImage() }
+    }
+    override fun onResume() {
+        super.onResume()
+        MobclickAgent.onPageStart(javaClass.name)
+        MobclickAgent.onResume(context) //统计时长
+    }
+
+    override fun onPause() {
+        super.onPause()
+        MobclickAgent.onPageEnd(javaClass.name)
+        MobclickAgent.onPause(context)
     }
 
 

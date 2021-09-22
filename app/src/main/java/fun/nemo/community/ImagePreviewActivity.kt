@@ -19,7 +19,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class ImagePreviewActivity : FragmentActivity() {
+class ImagePreviewActivity : BaseActivity() {
     private val tag = "ImagePreviewActivity"
     private val mImageUrls: MutableList<String> = Collections.synchronizedList(ArrayList())
     private var mIndex = 0
