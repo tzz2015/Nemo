@@ -61,10 +61,6 @@ class MainActivity : BaseActivity() {
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
     private fun initWebView() {
         webView.loadUrl(HOST_URL)
-        webView.settingsExtension?.setContentCacheEnable(true)
-        webView.settingsExtension?.setAutoRecoredAndRestoreScaleEnabled(true)
-        webView.settings.saveFormData = true
-        webView.settings.savePassword = true
         webView.setWebViewCallBack(object : X5WebView.WebViewCallBack {
             override fun openPhotoSelect() {
                 openAlbum()

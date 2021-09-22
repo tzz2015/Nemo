@@ -115,6 +115,11 @@ class X5WebView : WebView {
             addJavascriptInterface(MJavascriptInterface(mContext), "imagelistener")
             setUserAgent("From:很帅的飞飞")
         }
+        settingsExtension?.run {
+            // 内容缓存和回退保留
+            setContentCacheEnable(true)
+            setAutoRecoredAndRestoreScaleEnabled(true)
+        }
         if (x5WebViewExtension != null) {
             x5WebViewExtension.isHorizontalScrollBarEnabled = false//水平不显示滚动按钮
             x5WebViewExtension.isVerticalScrollBarEnabled = false //垂直不显示滚动按钮
@@ -226,7 +231,7 @@ class X5WebView : WebView {
         this.mWebViewCallback = webViewCallBack
     }
 
-    fun uploadFile(uri:Uri?){
+    fun uploadFile(uri: Uri?) {
         uri?.let {
             mFilePathCallback?.onReceiveValue(arrayOf(it))
         }
