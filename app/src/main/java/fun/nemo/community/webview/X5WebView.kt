@@ -5,6 +5,7 @@ import `fun`.nemo.community.interfaces.MJavascriptInterface
 import `fun`.nemo.community.utils.Constants
 import `fun`.nemo.community.utils.LogUtil
 import `fun`.nemo.community.utils.StatusBarUtil
+import android.R.attr.mode
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -21,7 +22,7 @@ import com.tencent.smtt.export.external.interfaces.SslErrorHandler
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest
 import com.tencent.smtt.sdk.*
 import com.tencent.smtt.sdk.WebSettings
-import java.lang.Exception
+
 
 /**
  * @description:
@@ -240,6 +241,14 @@ class X5WebView : WebView {
     fun uploadFile(uri: Uri?) {
         uri?.let {
             mFilePathCallback?.onReceiveValue(arrayOf(it))
+        }
+    }
+
+    override fun setOverScrollMode(overScrollMode: Int) {
+        try {
+            super.setOverScrollMode(mode)
+        } catch (e: Throwable) {
+            e.printStackTrace()
         }
     }
 
