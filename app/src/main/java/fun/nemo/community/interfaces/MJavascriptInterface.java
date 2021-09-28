@@ -35,6 +35,7 @@ public class MJavascriptInterface {
         if (array == null || array.length == 0) return;
         Log.e(getClass().getSimpleName(), "点击图片：" + img);
         ArrayList<String> list = addImages(array);
+        if (list.isEmpty()) return;
         //查看当前点击图片的索引
         int i = list.indexOf(img);
         //跳转显示图片页面

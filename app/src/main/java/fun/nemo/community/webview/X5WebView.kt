@@ -21,6 +21,7 @@ import com.tencent.smtt.export.external.interfaces.SslErrorHandler
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest
 import com.tencent.smtt.sdk.*
 import com.tencent.smtt.sdk.WebSettings
+import java.lang.Exception
 
 /**
  * @description:
@@ -197,11 +198,16 @@ class X5WebView : WebView {
 
 
     private fun openOurWebView(url: String) {
-        val intent = Intent()
-        intent.action = "android.intent.action.VIEW"
-        val contentUrl = Uri.parse(url)
-        intent.data = contentUrl
-        mContext.startActivity(intent)
+        try {
+            val intent = Intent()
+            intent.action = "android.intent.action.VIEW"
+            val contentUrl = Uri.parse(url)
+            intent.data = contentUrl
+            mContext.startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
     }
 
     private fun changeStatusBarColor(url: String?) {
